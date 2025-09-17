@@ -1,0 +1,10 @@
+N = int(input('Количество студентов: '))
+count_true = 0
+count_false = 0
+for i in range(N):
+    data = input().split()
+    format = data[3]
+    if format == 'True':
+        count_true += 1
+    else: count_false += 1
+print('очно/заочно:', count_true, count_false)

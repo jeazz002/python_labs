@@ -1,0 +1,5 @@
+a = input("a: ")
+cleaned_string = a.replace(",", ".")
+float_a = float(cleaned_string)
+b = float(input("b:"))
+print("sum=", float_a + b, ";", "avg=", round(((float_a + b) / 2), 2))
