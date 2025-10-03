@@ -69,7 +69,7 @@ print('очно/заочно:', count_true, count_false)
 
 #Лабораторная работа 2
 ## Задание 1
-#1 min_max
+### 1 min_max
 ```py
 array1 = [3, -1, 5, 5, 0]
 array2 = [42]
