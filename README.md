@@ -105,31 +105,27 @@ print(flatten(array1), flatten(array2), flatten(array3),)
 ```
 ![Картинка 1](./images/lab01/lab02/01.png)
 ## Задание 2
-#1 transpose
 ```py
-def transpose(m):
-    return [list(x) for x in zip(*m)]
+#1 transpose
+def transpose(mat: list[list[float | int]]):
+    return [list(x) for x in zip(*mat)]
 array1=[[1,2,3]]
 array2=[[1],[2],[3]]
 array3=[[1,2],[3,4]]
 print(transpose(array3),transpose(array2),transpose(array1))
-```
 #2 row_sums
-```py
 array1=[[1,2,3],[4,5,6]]
 array2=[[-1,1],[10,-10]]
-def row_sums(m):
-    res=[sum(x) for x in m]
+def row_sums(mat: list[list[float | int]]):
+    res=[sum(x) for x in mat]
     return res
 print(row_sums(array1),row_sums(array2))
-```
 #3 col_sums
-```py
 array1=[[1,2,3],[4,5,6]]
 array2=[[-1,1],[10,-10]]
 array3=[[0,0],[0,0]]
-def col_sums(m):
-    return [sum(x) for x in zip(*m)]
+def col_sums(mat: list[list[float | int]]):
+    return [sum(x) for x in zip(*mat)]
 print(col_sums(array1),col_sums(array2), col_sums(array3))
 ```
 ![Картинка 2](./images/lab01/lab02/02.png)
