@@ -89,7 +89,7 @@ print(min_max(array4))
 print(min_max(array5))
 ```
 ![Картинка 1](./images/lab01/lab02/01.png)
-#2 unique_sorted
+###2 unique_sorted
 ```py
 array1 = [3, 1, 2, 1, 3]
 array2 = [-1, -1, 0, 2, 2]
