@@ -145,6 +145,10 @@ print(transpose(array5))
 ![Картинка 1](./images/lab01/lab02/04.png)
 ### №2 row_sums
 ```py
+array1=[[1,2,3],[4,5,6]]
+array2=[[-1,1],[10,-10]]
+array3=[[0, 0], [0, 0]]
+array4=[[1, 2], [3]]
 def row_sums(mat: list[list[float or int]]) -> list[float]:
 
     for row in mat:
@@ -154,10 +158,18 @@ def row_sums(mat: list[list[float or int]]) -> list[float]:
     res = [sum(row) for row in mat]
 
     return res
+print(row_sums(array1))
+print(row_sums(array2))
+print(row_sums(array3))
+print(row_sums(array4))
 ```
 ![Картинка 1](./images/lab01/lab02/05.png)
 ### №3 col_sums
 ```py
+array1=[[1,2,3],[4,5,6]]
+array2=[[-1,1],[10,-10]]
+array3=[[0,0],[0,0]]
+array4=[[1, 2], [3]]
 def col_sums(mat: list[list[float | int]]) -> list[float]:
 
     for row in mat:
@@ -167,6 +179,10 @@ def col_sums(mat: list[list[float | int]]) -> list[float]:
     res = [sum(row) for row in zip(*mat)]
 
     return res
+print(col_sums(array1))
+print(col_sums(array2))
+print(col_sums(array3))
+print(col_sums(array4))
 ```
 ![Картинка 2](./images/lab01/lab02/06.png)
 ## Задание 3
