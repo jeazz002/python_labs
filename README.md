@@ -69,7 +69,7 @@ print('очно/заочно:', count_true, count_false)
 
 #Лабораторная работа 2
 ## Задание 1
-### 1 min_max
+### №1 min_max
 ```py
 array1 = [3, -1, 5, 5, 0]
 array2 = [42]
@@ -89,7 +89,7 @@ print(min_max(array4))
 print(min_max(array5))
 ```
 ![Картинка 1](./images/lab01/lab02/01.png)
-###2 unique_sorted
+### №2 unique_sorted
 ```py
 array1 = [3, 1, 2, 1, 3]
 array2 = [-1, -1, 0, 2, 2]
@@ -100,7 +100,7 @@ def unique_sorted(nums: list[float | int]):
 print(unique_sorted(array1), unique_sorted(array2), unique_sorted(array3),unique_sorted(array4))
 ```
 ![Картинка 1](./images/lab01/lab02/02.png)
-#3 flatten
+### №3 flatten
 ```py
 array1 = [[1, 2], [3, 4]]
 array2 = [[1, 2], (3, 4, 5)]
@@ -123,7 +123,7 @@ print(flatten(array4))
 ```
 ![Картинка 1](./images/lab01/lab02/03.png)
 ## Задание 2
-#1 transpose
+### №1 transpose
 ```py
 def transpose(mat: list[list[float | int]]):
     res=[list(x) for x in zip(*mat)]
@@ -143,7 +143,7 @@ print(transpose(array4))
 print(transpose(array5))
 ```
 ![Картинка 1](./images/lab01/lab02/04.png)
-#2 row_sums
+### №2 row_sums
 ```py
 def row_sums(mat: list[list[float or int]]) -> list[float]:
 
@@ -156,7 +156,7 @@ def row_sums(mat: list[list[float or int]]) -> list[float]:
     return res
 ```
 ![Картинка 1](./images/lab01/lab02/05.png)
-#3 col_sums
+### №3 col_sums
 ```py
 def col_sums(mat: list[list[float | int]]) -> list[float]:
 
