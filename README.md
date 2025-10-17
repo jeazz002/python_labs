@@ -267,7 +267,7 @@ for test in test_cases:
 ```py
 import re
 def tokenize(text: str) -> list[str]:
-    pattern = (r'[\w-]+')
+    pattern = (r'[\w]+(?:-[\w]+)*')
     tokens = []
     for match in re.finditer(pattern , text):
         tokens.append(match.group())
