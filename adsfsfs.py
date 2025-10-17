@@ -1,16 +1,3 @@
-def transpose(mat: list[list[float | int]]):
-    res=[list(x) for x in zip(*mat)]
-    for row in mat:
-        if len(mat[0])!=len(row):
-            raise ValueError
-    return res
-array1=[[1,2,3]]
-array2=[[1],[2],[3]]
-array3=[[1,2],[3,4]]
-array4=[]
-array5=[[1, 2], [3]]
-print(transpose(array1))
-print(transpose(array2))
-print(transpose(array3))
-print(transpose(array4))
-print(transpose(array5))
+#Модуль sys обеспечивает доступ к некоторым переменным и функциям, взаимодействующим с интерпретатором python.
+#readline() в Python — это метод, который читает одну строку из файла или стандартного ввода
+#stdin (стандартный ввод) в Python — это поток данных, который программа получает извне, чаще всего с клавиатуры, но также может получать из файла или другого источника

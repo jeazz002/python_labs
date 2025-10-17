@@ -41,8 +41,7 @@ def format_record(rec: tuple[str, str, float]) -> str:
 student1 = ("Иванов Иван Иванович", "BIVT-25", 4.6)
 student2 = ("Петров Пётр", "IKBO-12", 5.0)
 student3 = ("Петров Пётр Петрович", "IKBO-12", 5.0)
-student4 = ("  сидорова  анна   сергеевна ", "ABB-01", 3.999)
-
+student4 = ("  сидорова")
 print(format_record(student1))
 print(format_record(student2))
 print(format_record(student3))

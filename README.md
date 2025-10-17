@@ -223,3 +223,77 @@ print(format_record(student4))
 ```
 ![Картинка 3](./images/lab01/lab02/07.png)
 
+#Лабараторная работа №3
+## Задание A — src/lib/text.py
+### Normalize
+```py
+import re
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True): 
+    if casefold:
+        text = text.casefold()
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    
+    pattern= (r'[^\s]+')
+    normalized = []
+    for match in re.finditer(pattern, text):
+        normalized.append(match.group())
+
+    return ' '.join(normalized).strip()
+
+test_cases = ["ПрИвЕт\nМИр\t","ёжик, Ёлка","Hello\r\nWorld","  двойные   пробелы  "]
+for test in test_cases:
+    result=normalize(test)
+    print(result)
+```
+![Картинка 1](./images/lab03/01.png)
+### Tokenize
+```py
+import re
+def tokenize(text: str) -> list[str]:
+    pattern = (r'[\w-]+')
+    tokens = []
+    for match in re.finditer(pattern , text):
+        tokens.append(match.group())
+
+    return tokens
+test_cases = ["привет мир", "hello,world!!!", "по-настоящему круто", "2025 год", "emoji 😀 не слово"]
+for test in test_cases:
+    result = tokenize(test)
+    print(result)
+```
+![Картинка 2](./images/lab03/02.png)
+### count_freq+top_n
+```py
+def count_freq(tokens: list[str]):
+    d = {}
+    for word in tokens:
+        d[word] = d.get(word, 0) + 1
+    return d
+test1 = ["a","b","a","c","b","a"]
+print(count_freq (test1))
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    d = {}
+    for word in freq:
+        d[word] = d.get(word, 0) + 1
+    return sorted(d.items(),key=lambda x:(x[1]))[::-1]
+test1 = ["bb","aa","bb","aa","cc"]
+print( top_n(test1))
+```
+![Картинка 3](./images/lab03/03.png)
+## Задание B — src/text_stats.py (скрипт со stdin)
+```py
+import sys
+from lib import text
+line  = sys.stdin.readline()
+tokenized = text.tokenize(line)
+unique_words = text.top_n(tokenized)
+result = text.count_freq(unique_words)
+print(f"Всего слов: {len(tokenized)}")
+print(f"Уникальных слов: {len(unique_words)}")
+print('top-5:')
+for string in result:
+    print(f'{string[0]}:{string[1]}')
+```
+![Картинка 4](./images/lab03/04.png)
