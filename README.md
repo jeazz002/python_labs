@@ -239,7 +239,7 @@ print(format_record(student4))
 ```
 ![Картинка 3](./images/lab01/lab02/07.png)
 
-#Лабараторная работа №3
+# Лабараторная работа №3
 ## Задание A — src/lib/text.py
 ### Normalize
 ```py
