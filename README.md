@@ -313,3 +313,139 @@ for string in result:
     print(f'{string[0]}:{string[1]}')
 ```
 ![Картинка 4](./images/lab03/04.png)
+# Лабараторная работа №4
+## Функции реализованные для работы с текстом:
+### io_text_csv
+```py
+from pathlib import Path
+import csv
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Файл не найден: {p}")
+    return p.read_text(encoding=encoding)
+
+def write_csv(
+    rows: list[tuple | list], path: str | Path, header: tuple[str, ...] | None = None
+) -> None:
+    p = Path(path)
+    if p.suffix.lower() != ".csv":
+        raise ValueError
+    if rows:
+        first_length = len(rows[0])
+        for i, row in enumerate(rows):
+            if len(row) != first_length:
+                raise ValueError(f"ошибка")
+
+    with p.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+
+        if header is not None:
+            writer.writerow(header)
+        for row in rows:
+            writer.writerow(list(row))
+```
+### text.py
+```py
+from re import *
+def tokenize(text):
+    pattern = (r'[a-zA-Zа-яА-ЯёЁ0-9]+([-][a-zA-Zа-яА-ЯёЁ0-9]+)*')
+    tokens = []
+    for match in finditer(pattern,text):
+        tokens.append(match.group())
+    return tokens
+
+import re
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True): 
+    if casefold:
+        text = text.casefold()
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    pattern= (r'[a-zA-Zа-яА-ЯёЁ0-9]+([-][a-zA-Zа-яА-ЯёЁ0-9]+)*')
+    normalized = []
+    for match in re.finditer(pattern, text):
+        normalized.append(match.group())
+    return ' '.join(normalized).strip()
+
+def count_freq(tokens: list[str]):
+    d={x:tokens.count(x) for x in set(tokens)}
+    return sorted(d.items(),key=lambda x:-x[1])
+
+from collections import * 
+
+def frequencies_from_text(text: str) -> dict[str, int]:
+    tokens=tokenize(normalize(text))
+    return Counter(tokens)
+
+def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(freq.items(),key=lambda x: (-x[1],x[0]))
+```
+### Задание A
+```py
+import sys
+from pathlib import Path
+
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+from lib.io_txt_csv import read_text, write_csv
+
+result = read_text("src/data/input.txt")
+test = [("привет", 3), ("пока", 3)]
+write_csv(test, "src/data/test.csv", header=("word", "count"))
+```
+![Картинка 1](./images/lab04/01.png)
+### Задание B
+```py
+from pathlib import *
+import sys 
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+from lib.io_txt_csv import read_text, write_csv
+from lib.text import frequencies_from_text, sorted_word_counts
+
+input_file = "src/Data/input_test.txt" 
+output_file = "src/Data/output.csv" 
+encoding = "utf-8" 
+input_path = Path(input_file)
+output_path=Path(output_file)
+if not input_path.exists():
+    print(f"Ошибка: Файл '{input_file}' не найден.")
+    print("Пожалуйста, проверьте правильность пути к файлу.")
+else:
+    try:
+        file = read_text(input_file, encoding)
+    except FileNotFoundError:
+        print(f"Ошибка: Файл '{input_file}' не найден.")
+        sys.exit(1)
+    except UnicodeDecodeError:
+        print(f"Ошибка декодирования: проверьте кодировку (сейчас encoding='{encoding}').")
+        sys.exit(1)
+
+    freq = frequencies_from_text(file)
+    sorted_words = sorted_word_counts(freq)
+        
+    csv_rows = [[word, count] for word, count in sorted_words]
+    csv_header = ('word', 'count')
+    write_csv(csv_rows, output_path, csv_header)
+    total_words = sum(freq.values())
+    unique_words = len(freq)
+    print(f"Всего слов: {total_words}")
+    print(f"Уникальных слов: {unique_words}")
+    print("Топ 5 самых частых слов:")
+        
+    top_5 = sorted_words[:5]
+    if top_5:
+        for i, (word, count) in enumerate(top_5):
+            print(f"  {i+1}. '{word}': {count}")
+```
+![Картинка 1](./images/lab04/03.png)
+### текст  Лермонтова "В аптеке"
+![Картинка 1](./images/lab04/02.png)
