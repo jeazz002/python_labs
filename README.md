@@ -1,73 +1,331 @@
 # python_labs
 
-# Лабораторная работа 1
+# Лабораторная работа №5
+## Задание A — JSON ↔ CSV
+### JSON --> CSV
+```py
+import json
+import csv
+from pathlib import Path
+import sys
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
 
-## Задание 1
-```py
-name = str(input("Имя:"))
-age = int(input("возраст:"))
-print("Привет,", f'{name}''!', ' Через год тебе будет', age+1)
-```
-![Картинка 1](./images/lab01/01.png)
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
 
-## Задание 2
-```py
-a = input("a: ")
-cleaned_string = a.replace(",", ".")
-float_a = float(cleaned_string)
-b = float(input("b:"))
-print("sum=", float_a + b, ";", "avg=", round(((float_a + b) / 2), 2))
-```
-![Картинка 2](./images/lab01/02.png)
-## Задание 3
-```py
-price = float(input())
-discount = float(input())
-vat = float(input())
-base = price * (1 - discount/100)
-vat_amount = base * (vat/100)
-total = base + vat_amount
-print('База после скидки: 'f'{base:.2f}''₽')
-print('НДС: 'f'{vat_amount:.2f}''₽')
-print('Итого к оплате: 'f'{total:.2f}''₽')
-```
-![Картинка 3](./images/lab01/03.png)
-## Задание 4
-```py
-m = int(input('Минуты: '))
-hours = m//60
-minute = m%60
-print(f'{hours}:{minute:02d}')
-```
-![Картинка 4](./images/lab01/04.png)
-## Задание 5
-```py
-FIO = input('ФИО: ').split()
-answer = ''
-for i in range(len(FIO)):
-    answer+= FIO[i][0] 
-fio_with_spaces = ' '.join(FIO)
-length = len(fio_with_spaces)
-print('Инициалы:', answer+'.')
-print('Длина (символов):', length)
-```
-![Картинка 5](./images/lab01/05.png)
-## Задание 6
-```py
-N = int(input('Количество студентов: '))
-count_true = 0
-count_false = 0
-for i in range(N):
-    data = input().split()
-    format = data[3]
-    if format == 'True':
-        count_true += 1
-    else: count_false += 1
-print('очно/заочно:', count_true, count_false)
-```
-![Картинка 6](./images/lab01/06.png)
+def json_to_csv(json_path: str | Path, csv_path: str | Path, encoding: str = "utf-8") -> None:
+    input_path=Path(json_path)
+    output_path=Path(csv_path)
 
-# Лабораторная работа 2
+    if not input_path.exists():
+        raise FileNotFoundError(f"JSON файл не найден: {json_path}")
+    
+    with open(input_path,'r', encoding=encoding) as json_file:
+        data = json.load(json_file)
+        
+    with open(output_path, 'w', newline='', encoding=encoding) as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=['name','age','city'])
+        writer.writeheader()
+        writer.writerows(data)
+    print(f'Конвертировано {len(data)}')
+json_to_csv('src/data/test1.json','src/data/test1.csv')
+```
+### CSV --> JSON
+```py
+import json
+import csv
+from pathlib import Path
+import sys
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+def csv_to_json(csv_path: str, json_path: str) -> None:
+    encoding='utf-8'
+    input_path=Path(csv_path)
+    output_path=Path(json_path)
+
+    if not input_path.exists():
+        raise FileNotFoundError('пожалуйста, проверьте путь к файлу')
+    
+    if input_path.suffix.lower()!='.csv':
+        raise ValueError('Проверьте расширение файла')
+    
+    data=[]
+
+    with open(input_path,'r',encoding=encoding,newline='') as csv_file:
+        csv_reader=csv.DictReader(csv_file)
+        for row in csv_reader:
+            data.append(row)
+
+    with open(output_path,'w',encoding=encoding,newline='') as json_file:
+        json.dump(data,json_file,ensure_ascii=False,indent=2 )
+        
+        print('Конвертация прошла успешно')
+        print(f'Всего записей конвертировано:{len(data)}')
+csv_to_json('src/data/test1.csv','src/data/test1.json')
+```
+### Вывод:
+![Картинка 1](./images/lab05/01.png)
+# ----------------------------------
+![Картинка 1](./images/lab05/02.png)
+## Задание B
+### CSV --> XLXS
+```py
+import csv
+from openpyxl import Workbook
+from pathlib import Path
+import sys
+
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+def csv_to_xlsx(
+    csv_path: str | Path, xlsx_path: str | Path, encoding: str = "utf-8"
+) -> None:
+
+    csv_file = Path(csv_path)
+    xlsx_file = Path(xlsx_path)
+
+    if not csv_file.exists():
+        raise FileNotFoundError(f"CSV файл не найден: {csv_path}")
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "Data"
+
+    with open(csv_file, "r", encoding="utf-8", newline="") as csv_open:
+        csv_reader = csv.reader(csv_open)
+
+        for row_index, row in enumerate(csv_reader, 1):
+            for col_index, value in enumerate(row, 1):
+                worksheet.cell(row=row_index, column=col_index, value=value)
+    workbook.save(xlsx_file)
+    print(f"Успешно сконвертировано: {csv_path} -> {xlsx_path}")
+
+csv_to_xlsx("src/data/test1.csv", "src/data/test2.xlsx")
+```
+![Картинка 1](./images/lab05/03.png)
+
+# Лабараторная работа №4
+## Функции реализованные для работы с текстом:
+### io_text_csv
+```py
+from pathlib import Path
+import csv
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Файл не найден: {p}")
+    return p.read_text(encoding=encoding)
+
+def write_csv(
+    rows: list[tuple | list], path: str | Path, header: tuple[str, ...] | None = None
+) -> None:
+    p = Path(path)
+    if p.suffix.lower() != ".csv":
+        raise ValueError
+    if rows:
+        first_length = len(rows[0])
+        for i, row in enumerate(rows):
+            if len(row) != first_length:
+                raise ValueError(f"ошибка")
+
+    with p.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+
+        if header is not None:
+            writer.writerow(header)
+        for row in rows:
+            writer.writerow(list(row))
+```
+### text.py
+```py
+from re import *
+def tokenize(text):
+    pattern = (r'[a-zA-Zа-яА-ЯёЁ0-9]+([-][a-zA-Zа-яА-ЯёЁ0-9]+)*')
+    tokens = []
+    for match in finditer(pattern,text):
+        tokens.append(match.group())
+    return tokens
+
+import re
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True): 
+    if casefold:
+        text = text.casefold()
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    pattern= (r'[a-zA-Zа-яА-ЯёЁ0-9]+([-][a-zA-Zа-яА-ЯёЁ0-9]+)*')
+    normalized = []
+    for match in re.finditer(pattern, text):
+        normalized.append(match.group())
+    return ' '.join(normalized).strip()
+
+def count_freq(tokens: list[str]):
+    d={x:tokens.count(x) for x in set(tokens)}
+    return sorted(d.items(),key=lambda x:-x[1])
+
+from collections import * 
+
+def frequencies_from_text(text: str) -> dict[str, int]:
+    tokens=tokenize(normalize(text))
+    return Counter(tokens)
+
+def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(freq.items(),key=lambda x: (-x[1],x[0]))
+```
+### Задание A
+```py
+import sys
+from pathlib import Path
+
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+
+from lib.io_txt_csv import read_text, write_csv
+
+result = read_text("src/data/input.txt")
+test = [("привет", 3), ("пока", 3)]
+write_csv(test, "src/data/test.csv", header=("word", "count"))
+```
+![Картинка 1](./images/lab04/01.png)
+### Задание B
+```py
+from pathlib import *
+import sys 
+current_file = Path(__file__)
+print(f"Текущий файл: {current_file}")
+
+parent_dir = current_file.parent.parent
+sys.path.append(str(parent_dir))
+from lib.io_txt_csv import read_text, write_csv
+from lib.text import frequencies_from_text, sorted_word_counts
+
+input_file = "src/Data/input_test.txt" 
+output_file = "src/Data/output.csv" 
+encoding = "utf-8" 
+input_path = Path(input_file)
+output_path=Path(output_file)
+if not input_path.exists():
+    print(f"Ошибка: Файл '{input_file}' не найден.")
+    print("Пожалуйста, проверьте правильность пути к файлу.")
+else:
+    try:
+        file = read_text(input_file, encoding)
+    except FileNotFoundError:
+        print(f"Ошибка: Файл '{input_file}' не найден.")
+        sys.exit(1)
+    except UnicodeDecodeError:
+        print(f"Ошибка декодирования: проверьте кодировку (сейчас encoding='{encoding}').")
+        sys.exit(1)
+
+    freq = frequencies_from_text(file)
+    sorted_words = sorted_word_counts(freq)
+        
+    csv_rows = [[word, count] for word, count in sorted_words]
+    csv_header = ('word', 'count')
+    write_csv(csv_rows, output_path, csv_header)
+    total_words = sum(freq.values())
+    unique_words = len(freq)
+    print(f"Всего слов: {total_words}")
+    print(f"Уникальных слов: {unique_words}")
+    print("Топ 5 самых частых слов:")
+        
+    top_5 = sorted_words[:5]
+    if top_5:
+        for i, (word, count) in enumerate(top_5):
+            print(f"  {i+1}. '{word}': {count}")
+```
+![Картинка 1](./images/lab04/03.png)
+### текст  Лермонтова "В аптеке"
+![Картинка 1](./images/lab04/02.png)
+
+# Лабараторная работа №3
+## Задание A — src/lib/text.py
+### Normalize
+```py
+import re
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True): 
+    if casefold:
+        text = text.casefold()
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    
+    pattern= (r'[^\s]+')
+    normalized = []
+    for match in re.finditer(pattern, text):
+        normalized.append(match.group())
+
+    return ' '.join(normalized).strip()
+
+test_cases = ["ПрИвЕт\nМИр\t","ёжик, Ёлка","Hello\r\nWorld","  двойные   пробелы  "]
+for test in test_cases:
+    result=normalize(test)
+    print(result)
+```
+![Картинка 1](./images/lab03/01.png)
+### Tokenize
+```py
+import re
+def tokenize(text: str) -> list[str]:
+    pattern = (r'[\w]+(?:-[\w]+)*')
+    tokens = []
+    for match in re.finditer(pattern , text):
+        tokens.append(match.group())
+
+    return tokens
+test_cases = ["привет мир", "hello,world!!!", "по-настоящему круто", "2025 год", "emoji 😀 не слово"]
+for test in test_cases:
+    result = tokenize(test)
+    print(result)
+```
+![Картинка 2](./images/lab03/02.png)
+### count_freq+top_n
+```py
+def count_freq(tokens: list[str]):
+    d = {}
+    for word in tokens:
+        d[word] = d.get(word, 0) + 1
+    return d
+test1 = ["a","b","a","c","b","a"]
+print(count_freq (test1))
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    d = {}
+    for word in freq:
+        d[word] = d.get(word, 0) + 1
+    return sorted(d.items(),key=lambda x:(x[1]))[::-1]
+test1 = ["bb","aa","bb","aa","cc"]
+print( top_n(test1))
+```
+![Картинка 3](./images/lab03/03.png)
+## Задание B — src/text_stats.py (скрипт со stdin)
+```py
+import sys
+from lib import text
+line  = sys.stdin.readline()
+tokenized = text.tokenize(line)
+unique_words = text.top_n(tokenized)
+result = text.count_freq(unique_words)
+print(f"Всего слов: {len(tokenized)}")
+print(f"Уникальных слов: {len(unique_words)}")
+print('top-5:')
+for string in result:
+    print(f'{string[0]}:{string[1]}')
+```
+![Картинка 4](./images/lab03/04.png)
+
+# Лабораторная работа №2
 ## Задание 1
 ### №1 min_max
 ```py
@@ -239,213 +497,68 @@ print(format_record(student4))
 ```
 ![Картинка 3](./images/lab01/lab02/07.png)
 
-# Лабараторная работа №3
-## Задание A — src/lib/text.py
-### Normalize
+# Лабораторная работа №1
+## Задание 1
 ```py
-import re
-def normalize(text: str, *, casefold: bool = True, yo2e: bool = True): 
-    if casefold:
-        text = text.casefold()
-    if yo2e:
-        text = text.replace('ё', 'е').replace('Ё', 'Е')
-    
-    pattern= (r'[^\s]+')
-    normalized = []
-    for match in re.finditer(pattern, text):
-        normalized.append(match.group())
-
-    return ' '.join(normalized).strip()
-
-test_cases = ["ПрИвЕт\nМИр\t","ёжик, Ёлка","Hello\r\nWorld","  двойные   пробелы  "]
-for test in test_cases:
-    result=normalize(test)
-    print(result)
+name = str(input("Имя:"))
+age = int(input("возраст:"))
+print("Привет,", f'{name}''!', ' Через год тебе будет', age+1)
 ```
-![Картинка 1](./images/lab03/01.png)
-### Tokenize
+![Картинка 1](./images/lab01/01.png)
+
+## Задание 2
 ```py
-import re
-def tokenize(text: str) -> list[str]:
-    pattern = (r'[\w]+(?:-[\w]+)*')
-    tokens = []
-    for match in re.finditer(pattern , text):
-        tokens.append(match.group())
-
-    return tokens
-test_cases = ["привет мир", "hello,world!!!", "по-настоящему круто", "2025 год", "emoji 😀 не слово"]
-for test in test_cases:
-    result = tokenize(test)
-    print(result)
+a = input("a: ")
+cleaned_string = a.replace(",", ".")
+float_a = float(cleaned_string)
+b = float(input("b:"))
+print("sum=", float_a + b, ";", "avg=", round(((float_a + b) / 2), 2))
 ```
-![Картинка 2](./images/lab03/02.png)
-### count_freq+top_n
+![Картинка 2](./images/lab01/02.png)
+## Задание 3
 ```py
-def count_freq(tokens: list[str]):
-    d = {}
-    for word in tokens:
-        d[word] = d.get(word, 0) + 1
-    return d
-test1 = ["a","b","a","c","b","a"]
-print(count_freq (test1))
-
-def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
-    d = {}
-    for word in freq:
-        d[word] = d.get(word, 0) + 1
-    return sorted(d.items(),key=lambda x:(x[1]))[::-1]
-test1 = ["bb","aa","bb","aa","cc"]
-print( top_n(test1))
+price = float(input())
+discount = float(input())
+vat = float(input())
+base = price * (1 - discount/100)
+vat_amount = base * (vat/100)
+total = base + vat_amount
+print('База после скидки: 'f'{base:.2f}''₽')
+print('НДС: 'f'{vat_amount:.2f}''₽')
+print('Итого к оплате: 'f'{total:.2f}''₽')
 ```
-![Картинка 3](./images/lab03/03.png)
-## Задание B — src/text_stats.py (скрипт со stdin)
+![Картинка 3](./images/lab01/03.png)
+## Задание 4
 ```py
-import sys
-from lib import text
-line  = sys.stdin.readline()
-tokenized = text.tokenize(line)
-unique_words = text.top_n(tokenized)
-result = text.count_freq(unique_words)
-print(f"Всего слов: {len(tokenized)}")
-print(f"Уникальных слов: {len(unique_words)}")
-print('top-5:')
-for string in result:
-    print(f'{string[0]}:{string[1]}')
+m = int(input('Минуты: '))
+hours = m//60
+minute = m%60
+print(f'{hours}:{minute:02d}')
 ```
-![Картинка 4](./images/lab03/04.png)
-# Лабараторная работа №4
-## Функции реализованные для работы с текстом:
-### io_text_csv
+![Картинка 4](./images/lab01/04.png)
+## Задание 5
 ```py
-from pathlib import Path
-import csv
-
-def read_text(path: str | Path, encoding: str = "utf-8") -> str:
-    p = Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"Файл не найден: {p}")
-    return p.read_text(encoding=encoding)
-
-def write_csv(
-    rows: list[tuple | list], path: str | Path, header: tuple[str, ...] | None = None
-) -> None:
-    p = Path(path)
-    if p.suffix.lower() != ".csv":
-        raise ValueError
-    if rows:
-        first_length = len(rows[0])
-        for i, row in enumerate(rows):
-            if len(row) != first_length:
-                raise ValueError(f"ошибка")
-
-    with p.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-
-        if header is not None:
-            writer.writerow(header)
-        for row in rows:
-            writer.writerow(list(row))
+FIO = input('ФИО: ').split()
+answer = ''
+for i in range(len(FIO)):
+    answer+= FIO[i][0] 
+fio_with_spaces = ' '.join(FIO)
+length = len(fio_with_spaces)
+print('Инициалы:', answer+'.')
+print('Длина (символов):', length)
 ```
-### text.py
+![Картинка 5](./images/lab01/05.png)
+## Задание 6
 ```py
-from re import *
-def tokenize(text):
-    pattern = (r'[a-zA-Zа-яА-ЯёЁ0-9]+([-][a-zA-Zа-яА-ЯёЁ0-9]+)*')
-    tokens = []
-    for match in finditer(pattern,text):
-        tokens.append(match.group())
-    return tokens
-
-import re
-def normalize(text: str, *, casefold: bool = True, yo2e: bool = True): 
-    if casefold:
-        text = text.casefold()
-    if yo2e:
-        text = text.replace('ё', 'е').replace('Ё', 'Е')
-    pattern= (r'[a-zA-Zа-яА-ЯёЁ0-9]+([-][a-zA-Zа-яА-ЯёЁ0-9]+)*')
-    normalized = []
-    for match in re.finditer(pattern, text):
-        normalized.append(match.group())
-    return ' '.join(normalized).strip()
-
-def count_freq(tokens: list[str]):
-    d={x:tokens.count(x) for x in set(tokens)}
-    return sorted(d.items(),key=lambda x:-x[1])
-
-from collections import * 
-
-def frequencies_from_text(text: str) -> dict[str, int]:
-    tokens=tokenize(normalize(text))
-    return Counter(tokens)
-
-def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
-    return sorted(freq.items(),key=lambda x: (-x[1],x[0]))
+N = int(input('Количество студентов: '))
+count_true = 0
+count_false = 0
+for i in range(N):
+    data = input().split()
+    format = data[3]
+    if format == 'True':
+        count_true += 1
+    else: count_false += 1
+print('очно/заочно:', count_true, count_false)
 ```
-### Задание A
-```py
-import sys
-from pathlib import Path
-
-current_file = Path(__file__)
-print(f"Текущий файл: {current_file}")
-
-parent_dir = current_file.parent.parent
-sys.path.append(str(parent_dir))
-
-from lib.io_txt_csv import read_text, write_csv
-
-result = read_text("src/data/input.txt")
-test = [("привет", 3), ("пока", 3)]
-write_csv(test, "src/data/test.csv", header=("word", "count"))
-```
-![Картинка 1](./images/lab04/01.png)
-### Задание B
-```py
-from pathlib import *
-import sys 
-current_file = Path(__file__)
-print(f"Текущий файл: {current_file}")
-
-parent_dir = current_file.parent.parent
-sys.path.append(str(parent_dir))
-from lib.io_txt_csv import read_text, write_csv
-from lib.text import frequencies_from_text, sorted_word_counts
-
-input_file = "src/Data/input_test.txt" 
-output_file = "src/Data/output.csv" 
-encoding = "utf-8" 
-input_path = Path(input_file)
-output_path=Path(output_file)
-if not input_path.exists():
-    print(f"Ошибка: Файл '{input_file}' не найден.")
-    print("Пожалуйста, проверьте правильность пути к файлу.")
-else:
-    try:
-        file = read_text(input_file, encoding)
-    except FileNotFoundError:
-        print(f"Ошибка: Файл '{input_file}' не найден.")
-        sys.exit(1)
-    except UnicodeDecodeError:
-        print(f"Ошибка декодирования: проверьте кодировку (сейчас encoding='{encoding}').")
-        sys.exit(1)
-
-    freq = frequencies_from_text(file)
-    sorted_words = sorted_word_counts(freq)
-        
-    csv_rows = [[word, count] for word, count in sorted_words]
-    csv_header = ('word', 'count')
-    write_csv(csv_rows, output_path, csv_header)
-    total_words = sum(freq.values())
-    unique_words = len(freq)
-    print(f"Всего слов: {total_words}")
-    print(f"Уникальных слов: {unique_words}")
-    print("Топ 5 самых частых слов:")
-        
-    top_5 = sorted_words[:5]
-    if top_5:
-        for i, (word, count) in enumerate(top_5):
-            print(f"  {i+1}. '{word}': {count}")
-```
-![Картинка 1](./images/lab04/03.png)
-### текст  Лермонтова "В аптеке"
-![Картинка 1](./images/lab04/02.png)
+![Картинка 6](./images/lab01/06.png)

@@ -1,16 +1,9 @@
-a = int(input())
-n = 0
-b = 0
-counter = 0
-flag = "YES"
-while a != 0:
-    c = b
-    b = a % 10
-    if b <= c:
-        counter += 1
-    a = a//10
-if counter >= 0:
-    print("NO")
+s = input()
+if len(s) % 2 != 0:
+    a = s[:len(s)//2+1]
+    b = s[len(a):]
+    print(b+a)
 else:
-    print("YES")
-    
+    a = s[:len(s)//2+1]
+    b = s[len(a):]
+    print(b+a)
