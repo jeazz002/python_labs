@@ -1,9 +1,7 @@
 s = input()
-if len(s) % 2 != 0:
-    a = s[:len(s)//2+1]
-    b = s[len(a):]
-    print(b+a)
+s1  = s[1:len(s)]
+flag = True
+if 5 <= len(s) <= 15 and s[0] == '@' and s.isalnum == True:
+    print('Correct')
 else:
-    a = s[:len(s)//2+1]
-    b = s[len(a):]
-    print(b+a)
+    print('Incorrect')
