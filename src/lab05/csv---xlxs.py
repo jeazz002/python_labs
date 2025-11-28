@@ -9,6 +9,7 @@ print(f"Текущий файл: {current_file}")
 parent_dir = current_file.parent.parent
 sys.path.append(str(parent_dir))
 
+
 def csv_to_xlsx(
     csv_path: str | Path, xlsx_path: str | Path, encoding: str = "utf-8"
 ) -> None:
@@ -31,5 +32,6 @@ def csv_to_xlsx(
                 worksheet.cell(row=row_index, column=col_index, value=value)
     workbook.save(xlsx_file)
     print(f"Успешно сконвертировано: {csv_path} -> {xlsx_path}")
+
 
 csv_to_xlsx("src/data/test1.csv", "src/data/test2.xlsx")

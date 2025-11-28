@@ -8,6 +8,7 @@ sys.path.insert(0, str(parent_dir))
 
 from lab03.lib.text import tokenize, count_freq, top_n
 
+
 def main():
     parser = argparse.ArgumentParser(description="CLI-утилиты лабораторной №6")
     subparsers = parser.add_subparsers(dest="command")
@@ -59,6 +60,7 @@ def main():
         print(f"Топ-{args.top}:")
         for word, count in top_words:
             print(f"  {word}: {count}")
+
 
 if __name__ == "__main__":
     main()

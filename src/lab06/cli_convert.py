@@ -8,6 +8,7 @@ sys.path.insert(0, str(parent_dir))
 
 import importlib.util
 
+
 def load_module(filename):
     module_path = parent_dir / "lab05" / filename
     spec = importlib.util.spec_from_file_location("module", module_path)
@@ -15,9 +16,11 @@ def load_module(filename):
     spec.loader.exec_module(module)
     return module
 
+
 json_csv = load_module("json---csv.py")
 csv_json = load_module("csv---json.py")
 csv_xlsx = load_module("csv---xlxs.py")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Конвертеры данных")
@@ -57,6 +60,7 @@ def main():
         parser.error(str(e))
     except Exception as e:
         parser.error(f"Ошибка: {e}")
+
 
 if __name__ == "__main__":
     main()

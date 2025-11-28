@@ -257,3 +257,7 @@ python src/lab06/cli_text.py cat --input src/Data/input.txt -n
 ```
 
 
+
+
+
+

@@ -1,7 +1,17 @@
-s = input()
-s1  = s[1:len(s)]
-flag = True
-if 5 <= len(s) <= 15 and s[0] == '@' and s.isalnum == True:
-    print('Correct')
+number_day = int(input())
+weghit = float(input())
+plan = weghit - number_day * 0.2
+if weghit <= plan:
+    print("Все идет по плану")
+    print(
+        "#{0}  ДЕНЬ: ТЕКУЩИЙ ВЕС = {1} кг, ЦЕЛЬ по ВЕСУ = {2} кг".format(
+            number_day, weghit, plan
+        )
+    )
 else:
-    print('Incorrect')
+    print("Что-то пошло не так")
+    print(
+        "#{0}  ДЕНЬ: ТЕКУЩИЙ ВЕС = {1} кг, ЦЕЛЬ по ВЕСУ = {2} кг".format(
+            number_day, weghit, plan
+        )
+    )
