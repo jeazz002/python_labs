@@ -1,5 +1,79 @@
 # python_labs
 
+# Лабараторная работа №8
+## models
+```py
+from dataclasses import dataclass
+from datetime import datetime, date
+
+@dataclass
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self):
+        try:
+            datetime.strptime(self.birthdate, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(
+                f"birthdate must be in format YYYY-MM-DD, got {self.birthdate}"
+            )
+
+        if not (0 <= self.gpa <= 5):
+            raise ValueError(f"gpa must be between 0 and 5, got {self.gpa}")
+
+    def age(self) -> int:
+        b = datetime.strptime(self.birthdate, "%Y-%m-%d").date()
+        today = date.today()
+        age_years = today.year - b.year
+        if today.month < b.month or (today.month == b.month and today.day < b.day):
+            age_years -= 1
+        return age_years
+
+    def to_dict(self) -> dict:
+        return {
+            "fio": self.fio,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa,
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict):
+        return cls(
+            fio=d["fio"], birthdate=d["birthdate"], group=d["group"], gpa=d["gpa"]
+        )
+
+    def __str__(self) -> str:
+        return f"{self.fio}, гр. {self.group}, GPA {self.gpa:.2f}"
+```
+## serialize
+```py
+import json
+from pathlib import Path
+from .models import Student
+
+def students_to_json(students: list[Student], path: str | Path) -> None:
+    data = [s.to_dict() for s in students]
+    json_str = json.dumps(data, ensure_ascii=False, indent=2)
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(json_str)
+
+def students_from_json(path: str | Path) -> list[Student]:
+    with open(path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    students = []
+    for item in data:
+        student = Student.from_dict(item)
+        students.append(student)
+    
+    return students
+```
+# Вывод
+![Картинка 1](./images/lab08/01.png)
 # Лабараторная работа №7
 ## test_text
 ```py
